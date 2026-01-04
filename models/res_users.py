@@ -1,4 +1,5 @@
-from odoo import models, fields
+from odoo import models, fields, api
+from odoo.exceptions import ValidationError
 
 class ResUsers(models.Model):
     _inherit = 'res.users'
@@ -16,3 +17,4 @@ class ResUsers(models.Model):
             user.document_access_ids = Access.search([
                 ('partner_id', '=', user.partner_id.id)
             ]) if user.partner_id else False
+    

@@ -8,6 +8,8 @@
     'depends': ['base',
         'documents',],
     'data': [
+        'security/group.xml',
+        "security/ir.model.access.csv",
         'views/user_with_document_access_view.xml',
     ],
     
