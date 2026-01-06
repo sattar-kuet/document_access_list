@@ -1,4 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_users_admin,res.users admin,base.model_res_users,document_access_list.group_my_admin,1,0,1,0
+access_users_admin,res.users admin,base.model_res_users,document_access_list.group_my_admin,1,1,1,1
 access_users_staff,res.users staff,base.model_res_users,document_access_list.group_my_staff,1,0,0,0
 access_users_system,res.users system,base.model_res_users,base.group_system,1,1,1,1

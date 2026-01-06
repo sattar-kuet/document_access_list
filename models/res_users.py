@@ -1,6 +1,9 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
+import logging
+from odoo import models, api
 
+_logger = logging.getLogger(__name__)
 class ResUsers(models.Model):
     _inherit = 'res.users'
 
@@ -17,4 +20,15 @@ class ResUsers(models.Model):
             user.document_access_ids = Access.search([
                 ('partner_id', '=', user.partner_id.id)
             ]) if user.partner_id else False
+
+    @api.model
+    def create(self, vals):
+        _logger.warning("==== USER CREATE DEBUG START ====")
+        _logger.warning("CREATE VALS: %s", vals)
+        _logger.warning("GROUP COMMANDS: %s", vals.get('groups_id'))
+        _logger.warning("==== USER CREATE DEBUG END ====")
+
+        return super().create(vals)
+
+
     
