@@ -6,7 +6,7 @@
     'sequence': 10,
     'description': """Document Module """,
     'depends': ['base',
-        'documents',],
+        'documents', 'mail'],
     'data': [
         'security/group.xml',
         "security/ir.model.access.csv",
