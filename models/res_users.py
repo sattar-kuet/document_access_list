@@ -13,6 +13,12 @@ class ResUsers(models.Model):
         string='Document Access',
         readonly=True
     )
+    is_admin_user = fields.Boolean(string='Is Admin User')
+
+    its_user_type = fields.Selection([
+        ('its_portal_user', 'Portal User'),
+        ('its_staff_user', 'Staff User')
+    ], default='its_portal_user', string='User Type')
 
     def _compute_document_access_ids(self):
         Access = self.env['documents.access']
@@ -23,6 +29,34 @@ class ResUsers(models.Model):
 
     @api.model
     def create(self, vals):
+        # Detect user type
+        its_user_type = vals.get('its_user_type', 'its_portal_user')
+        is_admin_user = vals.get('is_admin_user', False)
+        print("---33--"*11, its_user_type, is_admin_user)
+
+        # 🔹 PORTAL USER FLOW
+        if not is_admin_user and its_user_type == 'its_portal_user':
+            portal_group = self.env.ref('base.group_portal')
+            internal_group = self.env.ref('base.group_user')
+
+            # Force portal flags
+            vals.update({
+                'share': True,
+            })
+
+            # Create user FIRST
+            user = super(ResUsers, self.sudo()).create(vals)
+
+            # Now fix groups explicitly
+            user.sudo().write({
+                'groups_id': [
+                    (3, internal_group.id),   # remove internal user
+                    (4, portal_group.id),     # add portal group
+                ]
+            })
+
+            return user
+        
         # 🔐 ALWAYS create user with sudo
         user = super(ResUsers, self.sudo()).create(vals)
 
@@ -52,6 +86,12 @@ class ResUsers(models.Model):
             and not self.env.user.has_group('base.group_system')
         ):
             raise AccessError("You are not allowed to create Admin users.")
+
+        # ✅ If Admin checkbox is checked → add admin group
+        if is_admin_user:
+            user.sudo().write({
+                'groups_id': [(4, admin_group.id)]
+            })
 
         # ✅ Auto-assign Staff only if no role selected
         if staff_group and not (

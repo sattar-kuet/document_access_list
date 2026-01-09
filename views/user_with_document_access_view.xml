@@ -10,6 +10,7 @@
                     <field name="name"/>
                     <field name="login"/>
                     <field name="email"/>
+                    <field name="its_user_type"/>
                     <field name="create_date"/>
                 </list>
             </field>
@@ -27,6 +28,8 @@
                             <field name="name"/>
                             <field name="login"/>
                             <field name="email"/>
+                            <field name="is_admin_user" groups="base.group_system"/>
+                            <field name="its_user_type" groups="document_access_list.group_my_admin,base.group_system" invisible="is_admin_user == True"/>
                         </group>
 
                         <notebook>
